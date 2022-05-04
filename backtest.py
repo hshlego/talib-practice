@@ -4,7 +4,7 @@ import pandas as pd
 def backtest(df: pd.DataFrame, budget: float, start: int, length: int, init_method, method) -> float:
     transactions_df = init_method(df, start, length)
 
-    asset = 0
+    asset = 0  # 코인
     initial_budget = budget
     bought = False
 
