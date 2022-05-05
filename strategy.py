@@ -1,3 +1,4 @@
+from pickle import HIGHEST_PROTOCOL
 from typing import Tuple
 import pandas as pd
 import talib
@@ -15,7 +16,7 @@ def init_simple_moving_average(df: pd.DataFrame, start: int, length: int) -> pd.
     return transactions_df
 
 
-def simple_moving_average(series: pd.Series, asset, budget, bought, fee) -> (int, int, bool):
+def simple_moving_average(series: pd.Series, asset, budget, bought, fee) -> Tuple[int, int, bool]:
     if bought is False and series['sma5'] > series['sma20']:  # 매수 (전량 매수)
         bought = True
         budget *= (1-fee)
@@ -131,6 +132,39 @@ def bollinger_bands(series: pd.Series, asset, budget, in_band, fee) -> Tuple[int
         if series['bbands_lower'] > series['close']:  # Got out of the band
             in_band = False
         elif series['bbands_upper'] < series['close']:  # Got out of the band
+            in_band = False
+
+    return asset, budget, in_band
+
+def init_envelope(df: pd.DataFrame, start: int, length: int) -> pd.DataFrame:
+    close_list = csv_parser.get_nparray(df, 'close', start, length)
+
+    transactions_df = pd.DataFrame()
+    transactions_df['close'] = df['close'].iloc[start:start+length].iloc[::-1]
+    transactions_df['ema20'] = talib.EMA(close_list, 20)
+    transactions_df.dropna(inplace=True)
+    return transactions_df
+
+
+def envelope(series: pd.Series, asset, budget, in_band, fee) -> Tuple[int, int, bool]:
+    thickness = 0.2
+    low_frac = 1 - thickness
+    high_frac = 1 + thickness
+    if not in_band:
+        if series['ema20'] * low_frac < series['close']:  # BUY
+            in_band = True
+            amount = budget / 4
+            asset += amount * (1-fee) / series['close']
+            budget -= amount
+        elif series['ema20'] * high_frac > series['close']:  # SELL
+            in_band = True
+            amount = asset / 4
+            asset -= amount
+            budget += amount * series['close'] * (1-fee)
+    else:
+        if series['ema20'] * low_frac > series['close']:  # Got out of the band
+            in_band = False
+        elif series['ema20'] * high_frac < series['close']:  # Got out of the band
             in_band = False
 
     return asset, budget, in_band
