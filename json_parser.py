@@ -27,6 +27,7 @@ method_list = [
     ["MACD 기준선", init_macd_signal, macd_signal],
     ["Stochastic Slow", init_stoch_slow, stoch_slow],
     ["Stochastic Fast", init_stoch_fast, stoch_fast],
+    ["존버", init_johnbur, johnbur],
 ]
 
 fees = {
@@ -59,7 +60,7 @@ for coin in coin_list:
         for i in range(4):
             algo = pq.get()
             ranks.append(algo.name)
-            profits.append("+{:.2f}%".format((algo.profit-1)*100))
+            profits.append("{:.2f}%".format((algo.profit-1)*100))
 
         output_list.append({'id': id, 'ranks': ranks, 'profits': profits})
         id += 1
