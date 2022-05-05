@@ -25,6 +25,7 @@ def get_header(df) -> str:
     return str(df.columns)
 
 
-# 데이터프레임의 특정 column 값을 범위 만큼 반환
+# 데이터프레임의 특정 column 값을 범위 만큼 반환, row 역순
 def get_nparray(df: pd.DataFrame, column: str, start=0, length=100) -> np.ndarray:
-    return np.asarray(df[column].iloc[start:start+length])
+    temp_df = df[column].iloc[start:start+length]
+    return np.asarray(temp_df[::-1])
