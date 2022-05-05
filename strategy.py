@@ -168,3 +168,35 @@ def envelope(series: pd.Series, asset, budget, in_band, fee) -> Tuple[int, int, 
             in_band = False
 
     return asset, budget, in_band
+
+def init_rsi(df: pd.DataFrame, start: int, length: int) -> pd.DataFrame:
+    close_list = csv_parser.get_nparray(df, 'close', start, length)
+
+    transactions_df = pd.DataFrame()
+    transactions_df['close'] = df['close'].iloc[start:start+length].iloc[::-1]
+    transactions_df['rsi'] = talib.RSI(close_list)
+    transactions_df.dropna(inplace=True)
+    return transactions_df
+
+
+def rsi(series: pd.Series, asset, budget, in_band, fee) -> Tuple[int, int, bool]:
+    lower_bound = 70
+    upper_bound = 30
+    if not in_band:
+        if lower_bound < series['rsi']:  # BUY
+            in_band = True
+            amount = budget / 4
+            asset += amount * (1-fee) / series['close']
+            budget -= amount
+        elif upper_bound > series['rsi']:  # SELL
+            in_band = True
+            amount = asset / 4
+            asset -= amount
+            budget += amount * series['close'] * (1-fee)
+    else:
+        if lower_bound > series['rsi']:  # Got out of the band
+            in_band = False
+        elif upper_bound < series['rsi']:  # Got out of the band
+            in_band = False
+
+    return asset, budget, in_band

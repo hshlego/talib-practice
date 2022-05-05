@@ -28,5 +28,8 @@ print("bbd profit :", bbd_profit)
 env_profit = backtest(btc, 1_000_000, start, days*24, strategy.init_envelope, strategy.envelope, fee)
 print("env profit :", env_profit)
 
+rsi_profit = backtest(btc, 1_000_000, start, days*24, strategy.init_rsi, strategy.rsi, fee)
+print("rsi profit :", rsi_profit)
+
 johnbur_profit = backtest(btc, 1_000_000, start, days*24, strategy.init_johnbur, strategy.johnbur, fee)
 print("존버 profit :", johnbur_profit)
