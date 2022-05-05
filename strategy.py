@@ -42,7 +42,7 @@ def init_weighted_moving_average(df: pd.DataFrame, start: int, length: int) -> p
     return transactions_df
 
 
-def weighted_moving_average(series: pd.Series, asset, budget, bought, fee) -> (int, int, bool):
+def weighted_moving_average(series: pd.Series, asset, budget, bought, fee) -> Tuple[int, int, bool]:
     if bought is False and series['wma5'] > series['wma20']:  # 매수
         bought = True
         budget *= (1-fee)
@@ -69,7 +69,7 @@ def init_exponential_moving_average(df: pd.DataFrame, start: int, length: int) -
     return transactions_df
 
 
-def exponential_moving_average(series: pd.Series, asset, budget, bought, fee) -> (int, int, bool):
+def exponential_moving_average(series: pd.Series, asset, budget, bought, fee) -> Tuple[int, int, bool]:
     if bought is False and series['ema5'] > series['ema20']:  # 매수
         bought = True
         budget *= (1-fee)
@@ -93,7 +93,7 @@ def init_johnbur(df: pd.DataFrame, start: int, length: int) -> pd.DataFrame:
     return transactions_df
 
 
-def johnbur(series: pd.Series, asset, budget, bought, fee) -> (int, int, bool):
+def johnbur(series: pd.Series, asset, budget, bought, fee) -> Tuple[int, int, bool]:
     if bought is False:
         bought = True
         budget *= (1 - fee)
