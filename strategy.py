@@ -1,3 +1,4 @@
+from typing import Tuple
 import pandas as pd
 import talib
 import csv_parser
@@ -100,3 +101,36 @@ def johnbur(series: pd.Series, asset, budget, bought, fee) -> (int, int, bool):
         budget = 0
 
     return asset, budget, bought
+
+def init_bollinger_bands(df: pd.DataFrame, start: int, length: int) -> pd.DataFrame:
+    close_list = csv_parser.get_nparray(df, 'close', start, length)
+
+    transactions_df = pd.DataFrame()
+    transactions_df['close'] = df['close'].iloc[start:start+length].iloc[::-1]
+    upper, middle, lower = talib.BBANDS(close_list, matype=talib.MA_Type.T3)
+    transactions_df['bbands_upper'] = upper
+    transactions_df['bbands_middle'] = middle
+    transactions_df['bbands_lower'] = lower
+    transactions_df.dropna(inplace=True)
+    return transactions_df
+
+
+def bollinger_bands(series: pd.Series, asset, budget, in_band, fee) -> Tuple[int, int, bool]:
+    if not in_band:
+        if series['bbands_lower'] < series['close']:  # BUY
+            in_band = True
+            amount = budget / 4
+            asset += amount * (1-fee) / series['close']
+            budget -= amount
+        elif series['bbands_upper'] > series['close']:  # SELL
+            in_band = True
+            amount = asset / 4
+            asset -= amount
+            budget += amount * series['close'] * (1-fee)
+    else:
+        if series['bbands_lower'] > series['close']:  # Got out of the band
+            in_band = False
+        elif series['bbands_upper'] < series['close']:  # Got out of the band
+            in_band = False
+
+    return asset, budget, in_band

@@ -22,5 +22,8 @@ print("wma profit :", wma_profit)
 ema_profit = backtest(btc, 1_000_000, start, days*24, strategy.init_exponential_moving_average, strategy.exponential_moving_average, fee)
 print("ema profit :", ema_profit)
 
+bbd_profit = backtest(btc, 1_000_000, start, days*24, strategy.init_bollinger_bands, strategy.bollinger_bands, fee)
+print("bbd profit :", bbd_profit)
+
 johnbur_profit = backtest(btc, 1_000_000, start, days*24, strategy.init_johnbur, strategy.johnbur, fee)
 print("존버 profit :", johnbur_profit)
