@@ -10,7 +10,7 @@ fees = {
 btc = csv_parser.get_dataframe()
 budget = 1_000_000
 start = 0
-days =365
+days = 360
 fee = fees["binance"]*0.01
 
 sma_profit = backtest(btc, 1_000_000, start, days*24, strategy.init_simple_moving_average, strategy.simple_moving_average, fee)
@@ -30,6 +30,9 @@ print("env profit :", env_profit)
 
 rsi_profit = backtest(btc, 1_000_000, start, days*24, strategy.init_rsi, strategy.rsi, fee)
 print("rsi profit :", rsi_profit)
+
+cci_profit = backtest(btc, 1_000_000, start, days*24, strategy.init_cci, strategy.cci, fee)
+print("cci profit :", cci_profit)
 
 johnbur_profit = backtest(btc, 1_000_000, start, days*24, strategy.init_johnbur, strategy.johnbur, fee)
 print("존버 profit :", johnbur_profit)
