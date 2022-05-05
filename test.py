@@ -31,8 +31,17 @@ print("env profit : {:.3f}".format(env_profit))
 rsi_profit = backtest(btc, 1_000_000, start, days*24, strategy.init_rsi, strategy.rsi, fee)
 print("rsi profit : {:.3f}".format(rsi_profit))
 
-cci_profit = backtest(btc, 1_000_000, start, days*24, strategy.init_cci, strategy.cci, fee)
-print("cci profit : {:.3f}".format(cci_profit))
+macd_histogram_profit = backtest(btc, 1_000_000, start, days*24, strategy.init_macd_histogram, strategy.macd_histogram, fee)
+print("macd histrogram profit : {:.3f}".format(macd_histogram_profit))
+
+macd_signal_profit = backtest(btc, 1_000_000, start, days*24, strategy.init_macd_signal, strategy.macd_signal, fee)
+print("macd signal profit : {:.3f}".format(macd_signal_profit))
+
+stoch_slow_profit = backtest(btc, 1_000_000, start, days*24, strategy.init_stoch_slow, strategy.stoch_slow, fee)
+print("stoch slow profit : {:.3f}".format(stoch_slow_profit))
+
+stoch_fast_profit = backtest(btc, 1_000_000, start, days*24, strategy.init_stoch_fast, strategy.stoch_fast, fee)
+print("stoch fast profit : {:.3f}".format(stoch_fast_profit))
 
 johnbur_profit = backtest(btc, 1_000_000, start, days*24, strategy.init_johnbur, strategy.johnbur, fee)
 print("jbr profit : {:.3f}".format(johnbur_profit))
